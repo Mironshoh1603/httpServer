@@ -1,6 +1,7 @@
 import http from "http";
+import fs from "fs";
 
-import { getUserById, getUsersAll } from "./user.js";
+import { addUser, getUserById, getUsersAll } from "./user.js";
 import readData from "./readFile.js";
 
 let server = http.createServer(function (req, res) {
@@ -11,14 +12,8 @@ let server = http.createServer(function (req, res) {
     if (id && Number.isInteger(parseInt(id))) {
       getUserById(req, res, id);
     } else getUsersAll(req, res);
-  } else if (req.method == "GET" && req.url == "/products") {
-    let userData = readData("./products.json");
-    res.writeHead(200, { "Content-Type": "application/json" });
-    let arr = req.url.split("/");
-    let idProduct = arr[2];
-    if (idProduct && Number.isInteger(parseInt(idProduct))) {
-      getUserById(req, res, idProduct);
-    } else getUsersAll(req, res);
+  } else if (req.method == "POST" && req.url == "/users/") {
+    addUser(req, res);
   } else {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.write(JSON.stringify({ data: "Salom bu http serveri" }));
